@@ -22,6 +22,7 @@ use JulienLinard\Core\Middleware\CsrfMiddleware;
 use JulienLinard\Validator\Validator as PhpValidator;
 use JulienLinard\Core\Form\Validator as CoreValidator;
 use App\Controller\HomeController;
+use App\Controller\AuthController;
 use App\Service\EnvValidator;
 use App\Service\EventListenerService;
 use App\Service\BootstrapService;
@@ -177,6 +178,7 @@ EventListenerService::register($events, $logger);
 // Les routes sont définies directement dans les contrôleurs avec des attributs #[Route]
 // Le router scanne les contrôleurs et enregistre automatiquement les routes
 $router->registerRoutes(HomeController::class);
+$router->registerRoutes(AuthController::class);
 
 // Démarrer l'application
 $app->start();

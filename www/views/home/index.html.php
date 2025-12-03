@@ -1,30 +1,37 @@
-<div class="container mx-auto px-4 py-8">
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 class="text-4xl font-bold text-gray-800 mb-4"><?= htmlspecialchars($title ?? 'Welcome') ?></h1>
-        <p class="text-xl text-gray-600 mb-6"><?= htmlspecialchars($message ?? 'Hello World!') ?></p>
-        
-        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
-            <p class="text-blue-700">
-                <strong>🎉 Congratulations!</strong> Your PHP application is running successfully.
-            </p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-gray-50 p-4 rounded">
-                <h2 class="font-semibold text-gray-800 mb-2">📦 Installed Packages</h2>
-                <ul class="text-sm text-gray-600 space-y-1">
-                    <li>✅ Core PHP Framework</li>
-                    <li>✅ PHP Router</li>
-                </ul>
-            </div>
-            <div class="bg-gray-50 p-4 rounded">
-                <h2 class="font-semibold text-gray-800 mb-2">🚀 Next Steps</h2>
-                <ul class="text-sm text-gray-600 space-y-1">
-                    <li>Create your controllers</li>
-                    <li>Add your views</li>
-                    <li>Configure your database</li>
-                </ul>
-            </div>
-        </div>
+<div class="relative w-full h-screen overflow-hidden">
+
+    <video
+        class="absolute top-0 left-0 w-full h-full object-cover"
+        autoplay
+        loop
+        muted
+        playsinline>
+        <source src="assets/Vidéo_de_plans_de_coupe_générée.mp4" type="video/mp4" />
+    </video>
+
+    <div class="relative z-10 justify-self-end text-center px-4">
+        <form action="/auth/login" method="post">
+            <?php
+    
+            use JulienLinard\Core\View\ViewHelper; ?>
+            <input type="hidden" name="_token" value="<?= htmlspecialchars(ViewHelper::csrfToken()) ?>">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 font-bold py-3 px-6 rounded transition inline-block text-sm text-white hover:text-white">
+                Connexion
+            </button>
+        </form>
     </div>
+
+    <div class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
+        <img src="assets/pizzeria logo-Photoroom.png" class="w-64 h-64" alt="Logo Pizza Code">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4">
+            Bienvenue à Pizza Code
+        </h1>
+        <p class="text-xl md:text-2xl mb-8">
+            Une expérience unique au monde, où informatique et pizza se rencontrent
+        </p>
+        <a href="/carte" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded transition inline-block">
+            Voir la carte
+        </a>
+    </div>
+
 </div>

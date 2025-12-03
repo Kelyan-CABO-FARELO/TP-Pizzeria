@@ -26,7 +26,7 @@ use JulienLinard\Doctrine\EntityManager;
 use JulienLinard\Router\Attributes\Route;
 use JulienLinard\Core\Controller\Controller;
 use JulienLinard\Auth\Middleware\GuestMiddleware;
-use JulienLinard\Core\Middleware\CsrfMiddleware; 
+use JulienLinard\Core\Middleware\CsrfMiddleware as CsrfCoreMiddleware; 
 
 class AuthController extends Controller
 {
@@ -45,7 +45,7 @@ class AuthController extends Controller
         return $this->view('auth/login', [
             'title' => 'Connexion',
             // CORRECTION : On passe le token à la vue
-            'csrf_token' => CsrfMiddleware::getToken()
+            'csrf_token' => CsrfCoreMiddleware::getToken()
         ]);
     }
     
@@ -81,7 +81,7 @@ class AuthController extends Controller
                 'title' => 'Connexion',
                 'errors' => $errors,
                 'old' => ['email' => $email],
-                'csrf_token' => CsrfMiddleware::getToken(),
+                'csrf_token' => CsrfCoreMiddleware::getToken(),
                 // AJOUT ICI : On passe la variable $error à la vue
                 'error' => $errorMsg 
             ]);
@@ -105,17 +105,17 @@ class AuthController extends Controller
         return $this->view('auth/login', [
             'title' => 'Connexion',
             'old' => ['email' => $email],
-            'csrf_token' => CsrfMiddleware::getToken(),
+            'csrf_token' => CsrfCoreMiddleware::getToken(),
             // AJOUT ICI : On passe la variable $error à la vue
             'error' => $errorMsg
         ]);
 
     }
 
-        #[Route(path: "/sign_in", name: "app_sign_in", middleware:[GuestMiddleware::class])]
+        #[Route(path: "/register", name: "app_register", middleware:[GuestMiddleware::class])]
     public function signForm()
     {
-        return $this->view("auth/sign_in", [
+        return $this->view("auth/register", [
             "csrf_token" => ViewHelper::csrfToken()
         ]);
     }
@@ -123,8 +123,8 @@ class AuthController extends Controller
     /**
      * Méthode qui récupère les informations du formuliare de création de compte
      */
-    #[Route(path: "/sign_in", methods: ["POST"], name: "app_sign_in.post", middleware:[GuestMiddleware::class, CsrfCoreMiddleware::class])]
-    public function sign_in(Request $request) {
+    #[Route(path: "/register", methods: ["POST"], name: "app_register.post", middleware:[GuestMiddleware::class, CsrfCoreMiddleware::class])]
+    public function register(Request $request) {
         try{
             $email = trim($_POST['email']) ?? '';
             $password = $_POST['password'] ?? '';
@@ -145,7 +145,7 @@ class AuthController extends Controller
                     'errors' => $this->validator->getErrors()
                 ]);
 
-                return $this->view("auth/sign_in", [
+                return $this->view("auth/register", [
                     "error" => $error,
                     "csrf_token" => ViewHelper::csrfToken()
                 ]);
@@ -155,7 +155,7 @@ class AuthController extends Controller
             if($this->userRepository->emailExists($email)){
                 // Si l'email existe
                 Logger::warning("Tentative d'inscrisption avec un email existant", ["email" => $email]);
-                return $this->view("auth/sign_in", [
+                return $this->view("auth/register", [
                     "error" => "Cet email existe déjà", 
                     "csrf_token" => ViewHelper::csrfToken()
                 ]);
@@ -169,8 +169,6 @@ class AuthController extends Controller
             $user->password = password_hash($password, PASSWORD_BCRYPT);
             $user->firstname = $firstname;
             $user->lastname = $lastname;
-            $user->created_at = new DateTime();
-            $user->is_active = true;
 
             $this->em->persist($user);
 
@@ -185,7 +183,7 @@ class AuthController extends Controller
             
         } catch (\Exception $e){
             Logger::exception($e, ["action" => "register"]);
-            return $this->view("auth/sign_in", [
+            return $this->view("auth/register", [
                 "error" => $e,
                 "csrf_token" => ViewHelper::csrfToken()
             ]);

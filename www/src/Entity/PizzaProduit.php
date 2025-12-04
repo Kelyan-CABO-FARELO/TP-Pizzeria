@@ -19,6 +19,6 @@ class PizzaProduit
     #[Column(type: 'integer')]
     public int $id_taille;
 
-    #[Column(type: 'float')]
-    public float $price;
+    // RETIRÉ : public float $price; 
+    // Le prix n'est plus stocké ici, il est calculé (Pizza.base_price + Taille.price_supplement)
 }

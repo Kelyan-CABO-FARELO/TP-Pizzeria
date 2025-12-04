@@ -16,6 +16,7 @@ class Taille
     #[Column(type: 'string', length: 50)]
     public string $label;
 
-    #[Column(type: 'float', default: 1.00)]
-    public float $factor = 1.00;
+    // CHANGÉ : C'est maintenant un montant à ajouter (ex: +2.00 ou -1.00)
+    #[Column(type: 'float', default: 0.00)]
+    public float $price_supplement = 0.00;
 }

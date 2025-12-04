@@ -17,17 +17,18 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
+use App\Service\EnvValidator;
+use App\Service\BootstrapService;
+use App\Controller\AuthController;
+use App\Controller\HomeController;
+use JulienLinard\Auth\AuthManager;
 use JulienLinard\Core\Application;
+use App\Controller\PizzaController;
+use App\Service\EventListenerService;
+use JulienLinard\Doctrine\EntityManager;
 use JulienLinard\Core\Middleware\CsrfMiddleware;
 use JulienLinard\Validator\Validator as PhpValidator;
 use JulienLinard\Core\Form\Validator as CoreValidator;
-use App\Controller\HomeController;
-use App\Controller\AuthController;
-use App\Service\EnvValidator;
-use App\Service\EventListenerService;
-use App\Service\BootstrapService;
-use JulienLinard\Doctrine\EntityManager;
-use JulienLinard\Auth\AuthManager;
 
 // ============================================
 // ÉTAPE 1 : CRÉATION DE L'APPLICATION
@@ -179,6 +180,7 @@ EventListenerService::register($events, $logger);
 // Le router scanne les contrôleurs et enregistre automatiquement les routes
 $router->registerRoutes(HomeController::class);
 $router->registerRoutes(AuthController::class);
+$router->registerRoutes(PizzaController::class);
 
 // Démarrer l'application
 $app->start();

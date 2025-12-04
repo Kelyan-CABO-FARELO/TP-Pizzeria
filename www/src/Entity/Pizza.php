@@ -21,4 +21,8 @@ class Pizza
 
     #[Column(type: 'string', length: 255, nullable: true)]
     public ?string $image_url = null;
+
+    // NOUVEAU : Le prix de base (ex: 8.00)
+    #[Column(type: 'float')]
+    public float $base_price;
 }

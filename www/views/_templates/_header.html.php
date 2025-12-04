@@ -9,8 +9,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
+
 <body class="font-sans text-gray-900 bg-gray-100 overflow-hidden">
 
+    
+    <div class="flex justify-end z-50 absolute top-4 right-4 gap-4">
+        <?php
+        $app = \JulienLinard\Core\Application::getInstance();
+        $container = $app->getContainer();
+        $auth = $container->make(\JulienLinard\Auth\AuthManager::class);
+        $user = $auth->user();
+        ?>
+    
+        <?php if ($user): ?>
+            <div class="flex items-center gap-4 bg-black bg-opacity-50 p-2 rounded-lg text-white">
+                <span>Bonjour, <strong><?= htmlspecialchars($user->lastname) ?></strong> !</span>
+                <a href="/logout"
+                    class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition text-sm">
+                    Se déconnecter
+                </a>
+            </div>
+        <?php else: ?>
+            <div class="flex gap-2">
+                <a href="/auth/login"
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition text-sm">
+                    Se connecter
+                </a>
+                <a href="/register"
+                    class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition text-sm">
+                    S'inscrire
+                </a>
+            </div>
+        <?php endif; ?>
+    </div>
     <div class="flex h-screen w-full">
 
         <aside class="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0 transition-all duration-300 z-50">
@@ -43,6 +74,20 @@
                             <i class="fas fa-map-marker-alt w-6"></i> Accès & Horaires
                         </a>
                     </li>
+
+                    <?php if ($user && $user->role == "ADMIN"): ?>
+                        <li>
+                            <a href="/pizza" class="block py-3 px-6 hover:bg-gray-800 hover:text-yellow-400 border-l-4 border-transparent hover:border-yellow-400 transition-colors">
+                                <i class="fa-solid fa-pen-to-square w-6"></i> Gérer les pizzas
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="/commandes" class="block py-3 px-6 hover:bg-gray-800 hover:text-yellow-400 border-l-4 border-transparent hover:border-yellow-400 transition-colors">
+                                <i class="fa-solid fa-bell-concierge w-6"></i>Gérer les commandes
+                            </a>
+                        </li>
+                    <?php endif ?>
                 </ul>
             </nav>
 

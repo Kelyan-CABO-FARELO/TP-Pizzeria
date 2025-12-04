@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use JulienLinard\Router\Response;
+use App\Middleware\AdminMiddleware;
 use JulienLinard\Core\View\ViewHelper;
 use JulienLinard\Router\Attributes\Route;
 use JulienLinard\Core\Controller\Controller;
@@ -56,6 +57,34 @@ class HomeController extends Controller
     {
         return $this->view('home/pizzeria', [
             'title' => 'Notre pizzeria'
+        ]);
+    }
+
+    /**
+     * Route vers la gestion des pizzas
+     * Vérification que l'utilisateur est un admin grâce au middleware
+     */
+    #[Route(
+        path: '/pizza',methods: ['GET'],name: 'pizza', middleware: [AdminMiddleware::class]
+    )]
+    public function pizza(): Response
+    {
+        return $this->view('home/pizza', [
+            'title' => 'Gérer les pizzas'
+        ]);
+    }
+
+    /**
+     * Route vers la gestion des des commandes
+     * Vérification que l'utilisateur est un admin grâce au middleware
+     */
+    #[Route(
+        path: '/commandes',methods: ['GET'],name: 'commandes', middleware: [AdminMiddleware::class]
+    )]
+    public function commandes(): Response
+    {
+        return $this->view('home/commandes', [
+            'title' => 'Gérer les commandes'
         ]);
     }
 }

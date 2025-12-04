@@ -9,16 +9,34 @@
         <source src="assets/Vidéo_de_plans_de_coupe_générée.mp4" type="video/mp4" />
     </video>
 
-    <div class="relative z-10 justify-self-end text-center px-4">
-        <form action="/auth/login" method="post">
-            <?php
-    
-            use JulienLinard\Core\View\ViewHelper; ?>
-            <input type="hidden" name="_token" value="<?= htmlspecialchars(ViewHelper::csrfToken()) ?>">
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 font-bold py-3 px-6 rounded transition inline-block text-sm text-white hover:text-white">
-                Connexion
-            </button>
-        </form>
+    <div class="flex justify-end relative z-10 absolute top-4 right-4 flex gap-4">
+        <?php
+        $app = \JulienLinard\Core\Application::getInstance();
+        $container = $app->getContainer();
+        $auth = $container->make(\JulienLinard\Auth\AuthManager::class);
+        $user = $auth->user();
+        ?>
+
+        <?php if ($user): ?>
+                <div class="flex items-center gap-4 bg-black bg-opacity-50 p-2 rounded-lg text-white">
+                    <span>Bonjour, <strong><?= htmlspecialchars($user->lastname) ?></strong> !</span>
+                    <a href="/logout"
+                        class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition text-sm">
+                        Se déconnecter
+                    </a>
+                </div>
+        <?php else: ?>
+            <div class="flex gap-2">
+                <a href="/auth/login"
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition text-sm">
+                    Se connecter
+                </a>
+                <a href="/register"
+                    class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition text-sm">
+                    S'inscrire
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">

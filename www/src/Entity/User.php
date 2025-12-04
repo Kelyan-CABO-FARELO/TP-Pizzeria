@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -14,7 +13,7 @@ class User implements UserInterface
 {
     #[Id]
     #[Column(type: 'integer', autoIncrement: true)]
-    public int $id;
+    public ?int $id = null;
 
     #[Column(type: 'string', length: 100)]
     public string $lastname;
@@ -32,7 +31,7 @@ class User implements UserInterface
     public string $role = 'CLIENT';
 
     // Relation avec User_info (optionnel pour le login, mais présent en base)
-    #[Column(name: 'id_user_info', type: 'integer', nullable: true)]
+    #[Column(type: 'integer', default: NULL)]
     public ?int $id_user_info = null;
 
     /**

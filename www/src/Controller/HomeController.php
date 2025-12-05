@@ -22,7 +22,6 @@ class HomeController extends Controller
     /**
      * Route racine : affiche la page d'accueil
      * 
-     * CONCEPT : Route simple sans middleware
      */
     #[Route(path: '/', methods: ['GET'], name: 'home')]
     public function index(): Response
@@ -46,12 +45,31 @@ class HomeController extends Controller
             $pizzas = []; // En cas d'erreur, liste vide pour ne pas casser la page
         }
 
-        // 2. Passer la variable 'pizzas' à la vue
         return $this->view('home/carte', [
             'title' => 'Notre carte',
             'pizzas' => $pizzas
         ]);
     }
+
+    #[Route(path: '/onepizza/{id}', methods: ['GET'], name: 'onepizza')]
+    public function onepizza(int $id): Response
+    {
+        try {
+            $pizza = $this->em->find(Pizza::class, $id);
+        } catch (\Exception $e) {
+            $pizza = null;
+        }
+
+        if (!$pizza) {
+            return $this->redirect('/carte');
+        }
+
+        return $this->view('home/onepizza', [
+            'title' => $pizza->name,
+            'pizza' => $pizza
+        ]);
+    }
+
 
     /**
      * Route vers l'histoire de la pizzeria

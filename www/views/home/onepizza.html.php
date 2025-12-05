@@ -21,7 +21,9 @@
                     <?= htmlspecialchars($pizza->name) ?>
                 </h1>
                 <span class="text-2xl font-bold text-yellow-600">
-                    <?= number_format($pizza->base_price, 2) ?> €
+                    <span id="display-price" data-base-price="<?= $pizza->base_price ?>">
+                        <?= number_format($pizza->base_price, 2) ?>
+                    </span> €
                 </span>
             </div>
 
@@ -37,24 +39,37 @@
                 <div class="mb-6">
                     <label class="block text-sm font-bold text-gray-700 mb-2">Choisissez votre taille</label>
                     <div class="grid grid-cols-3 gap-3">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="size" value="S" class="peer sr-only">
-                            <div class="rounded-lg border border-gray-300 peer-checked:border-yellow-500 peer-checked:bg-yellow-50 py-3 text-center transition-all hover:border-yellow-400">
-                                <div class="font-bold text-gray-800">Petite</div>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="size" value="M" class="peer sr-only" checked>
-                            <div class="rounded-lg border border-gray-300 peer-checked:border-yellow-500 peer-checked:bg-yellow-50 py-3 text-center transition-all hover:border-yellow-400">
-                                <div class="font-bold text-gray-800">Moyenne</div>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="size" value="L" class="peer sr-only">
-                            <div class="rounded-lg border border-gray-300 peer-checked:border-yellow-500 peer-checked:bg-yellow-50 py-3 text-center transition-all hover:border-yellow-400">
-                                <div class="font-bold text-gray-800">Grande</div>
-                            </div>
-                        </label>
+                        
+                        <?php foreach ($tailles as $taille): ?>
+                            <?php 
+                                // Calcul PHP : Si base_price = 12 et supplement = -2, alors total = 10
+                                $prixTotalTaille = $pizza->base_price + $taille->price_supplement;
+                                
+                                // On détermine si c'est la taille par défaut (celle qui a 0 de supplément, donc la Moyenne)
+                                $isDefault = ($taille->price_supplement == 0);
+                            ?>
+                            <label class="cursor-pointer group">
+                                <input type="radio" 
+                                       name="size" 
+                                       value="<?= $taille->id ?>" 
+                                       data-supplement="<?= $taille->price_supplement ?>"
+                                       class="peer sr-only size-selector"
+                                       <?= $isDefault ? 'checked' : '' ?> 
+                                >
+                                <div class="rounded-lg border border-gray-300 peer-checked:border-yellow-500 peer-checked:bg-yellow-50 py-3 text-center transition-all hover:border-yellow-400 flex flex-col justify-center h-full">
+                                    
+                                    <span class="font-bold text-gray-800 text-sm">
+                                        <?= htmlspecialchars($taille->label) ?>
+                                    </span>
+                                    
+                                    <span class="text-xs text-gray-500 font-semibold mt-1 group-hover:text-yellow-600 peer-checked:text-yellow-700">
+                                        <?= number_format($prixTotalTaille, 2) ?> €
+                                    </span>
+
+                                </div>
+                            </label>
+                        <?php endforeach; ?>
+
                     </div>
                 </div>
 
@@ -74,3 +89,36 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const priceDisplay = document.getElementById('display-price');
+    const basePrice = parseFloat(priceDisplay.dataset.basePrice);
+    const sizeInputs = document.querySelectorAll('.size-selector');
+
+    function updatePrice() {
+        let supplement = 0;
+        
+        // Trouver le bouton coché
+        sizeInputs.forEach(input => {
+            if (input.checked) {
+                // parseFloat gère très bien les nombres négatifs ("-2.00" devient -2)
+                supplement = parseFloat(input.dataset.supplement);
+            }
+        });
+
+        // L'addition fonctionne comme une soustraction si le nombre est négatif
+        // Exemple : 12 + (-2) = 10
+        const total = basePrice + supplement;
+        
+        priceDisplay.textContent = total.toFixed(2);
+    }
+
+    sizeInputs.forEach(input => {
+        input.addEventListener('change', updatePrice);
+    });
+
+    // Lancement au chargement pour afficher le bon prix par défaut
+    updatePrice();
+});
+</script>

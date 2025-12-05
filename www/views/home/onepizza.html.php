@@ -34,6 +34,8 @@
             <hr class="border-gray-200 mb-6">
 
             <form action="/panier/add" method="POST" class="mt-auto">
+                <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
+                
                 <input type="hidden" name="pizza_id" value="<?= $pizza->id ?>">
 
                 <div class="mb-6">

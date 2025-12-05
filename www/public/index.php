@@ -24,6 +24,7 @@ use App\Controller\HomeController;
 use JulienLinard\Auth\AuthManager;
 use JulienLinard\Core\Application;
 use App\Controller\PizzaController;
+use App\Controller\PanierController;
 use App\Service\EventListenerService;
 use JulienLinard\Doctrine\EntityManager;
 use JulienLinard\Core\Middleware\CsrfMiddleware;
@@ -181,6 +182,7 @@ EventListenerService::register($events, $logger);
 $router->registerRoutes(HomeController::class);
 $router->registerRoutes(AuthController::class);
 $router->registerRoutes(PizzaController::class);
+$router->registerRoutes(PanierController::class);
 
 // Démarrer l'application
 $app->start();

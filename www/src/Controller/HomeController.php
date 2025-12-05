@@ -11,6 +11,8 @@ use JulienLinard\Core\View\ViewHelper;
 use JulienLinard\Router\Attributes\Route;
 use JulienLinard\Core\Controller\Controller;
 use JulienLinard\Doctrine\EntityManager;
+// AJOUT : Import du middleware pour récupérer le token
+use JulienLinard\Core\Middleware\CsrfMiddleware;
 
 class HomeController extends Controller
 {
@@ -56,7 +58,6 @@ class HomeController extends Controller
     {
         try {
             $pizza = $this->em->find(Pizza::class, $id);
-            // AJOUTE CETTE LIGNE : On récupère toutes les tailles
             $tailles = $this->em->getRepository(Taille::class)->findAll(); 
         } catch (\Exception $e) {
             $pizza = null;
@@ -67,10 +68,14 @@ class HomeController extends Controller
             return $this->redirect('/carte');
         }
 
+        // AJOUT : Récupération du token CSRF
+        $csrfToken = CsrfMiddleware::getToken();
+
         return $this->view('home/onepizza', [
             'title' => $pizza->name,
             'pizza' => $pizza,
-            'tailles' => $tailles // <--- AJOUTE ÇA : On envoie la variable à la vue
+            'tailles' => $tailles,
+            'csrfToken' => $csrfToken // AJOUT : Envoi du token à la vue
         ]);
     }
 

@@ -90,12 +90,7 @@ class HomeController extends Controller
      * Route vers la gestion des pizzas
      * Vérification que l'utilisateur est un admin grâce au middleware
      */
-    #[Route(
-        path: '/pizza',
-        methods: ['GET'],
-        name: 'pizza',
-        middleware: [AdminMiddleware::class]
-    )]
+    #[Route(path: '/pizza', methods: ['GET'], name: 'pizza',middleware: [AdminMiddleware::class])]
     public function pizza(): Response
     {
         return $this->view('home/pizza', [

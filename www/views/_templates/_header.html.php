@@ -10,7 +10,7 @@
 </head>
 
 
-<body class="font-sans text-gray-900 bg-gray-100 overflow-hidden">
+<body class="font-sans text-gray-900 bg-gray-100">
 
     
     <div class="flex justify-end z-50 absolute top-4 right-4 gap-4">
@@ -97,4 +97,4 @@
         </aside>
 
         <main class="flex-1 relative overflow-y-auto overflow-x-hidden bg-gray-100">
-            <div class="relative w-full h-screen overflow-hidden">
+            <div class="relative w-full h-screen">

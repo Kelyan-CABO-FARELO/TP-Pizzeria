@@ -48,4 +48,7 @@
             </div>
         <?php endif; ?>
     </div>
+    <a href="/pizza" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-bold shadow-lg transition">
+            Retour
+        </a>
 </div>

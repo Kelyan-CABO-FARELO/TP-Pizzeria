@@ -183,9 +183,6 @@ class PizzaController extends Controller
         }
     }
 
-    /**
-     * NOUVEAU : Méthode pour supprimer une pizza
-     */
     #[Route(path: '/pizza/delete/{id}', methods: ['GET'], name: 'pizza.delete', middleware: [AdminMiddleware::class])]
     public function delete(int $id): Response
     {
@@ -213,9 +210,107 @@ class PizzaController extends Controller
         // On récupère la liste
         $tailles = $this->em->getRepository(Taille::class)->findAll();
 
-        return $this->view('pizza/sizeprice', [ // Note : Assurez-vous que le fichier est bien dans views/pizza/
-            'title' => 'Gérer les tailles', // J'ai corrigé le titre aussi
-            'tailles' => $tailles // J'ai mis 'tailles' au pluriel pour être cohérent
+        return $this->view('pizza/sizeprice', [
+            'title' => 'Gérer les tailles',
+            'tailles' => $tailles
         ]);
+    }
+
+    #[Route(path: '/addsize', methods: ['GET'], name: 'addsize', middleware: [AdminMiddleware::class])]
+    public function addsize(): Response
+    {
+        return $this->view('pizza/addsize', [
+            'title' => 'Ajouter une taille',
+            'csrf_token' => CsrfMiddleware::getToken() // Indispensable pour la sécurité
+        ]);
+    }
+
+    /**
+     * Traite la création de la taille (POST)
+     */
+    #[Route(path: '/addsize', methods: ['POST'], name: 'size.store', middleware: [AdminMiddleware::class])]
+    public function storeSize(Request $request): Response
+    {
+        $label = $request->getPost('label');
+        $price = $request->getPost('price_supplement');
+
+        // Validation simple
+        if ($label && $price !== null) {
+            $taille = new Taille();
+            $taille->label = $label;
+            $taille->price_supplement = (float) $price;
+
+            $this->em->persist($taille); 
+            $this->em->flush();
+        }
+
+        return $this->redirect('/sizeprice');
+    }
+
+    /**
+     * Route pour modifier une taille spécifique
+     */
+    #[Route(path: '/modifysizeprice/{id}', methods: ['GET'], name: 'modifysizeprice', middleware: [AdminMiddleware::class])]
+    public function modifysizeprice(int $id): Response
+    {
+        $taille = $this->em->getRepository(Taille::class)->find($id);
+
+        if (!$taille) {
+            return $this->redirect('/sizeprice');
+        }
+
+        return $this->view('pizza/modifysizeprice', [ 
+            'title' => 'Modifier la taille', 
+            'taille' => $taille,
+            'csrf_token' => CsrfMiddleware::getToken()
+        ]);
+    }
+
+    /**
+     * Traite la modification de la taille (POST)
+     */
+    #[Route(path: '/sizeprice/update/{id}', methods: ['POST'], name: 'size.update', middleware: [AdminMiddleware::class])]
+    public function updateSize(int $id, Request $request): Response
+    {
+        $taille = $this->em->find(Taille::class, $id);
+
+        if (!$taille) {
+            return $this->redirect('/sizeprice');
+        }
+
+        $label = $request->getPost('label');
+        $price = $request->getPost('price_supplement');
+
+        if ($label && $price !== null) {
+            $taille->label = $label;
+            $taille->price_supplement = (float) $price;
+
+            $this->em->persist($taille);
+            $this->em->flush();
+        }
+
+        return $this->redirect('/sizeprice');
+    }
+
+    /**
+     * Supprime une taille
+     * CORRECTION : Le path doit correspondre au lien HTML et inclure {id}
+     */
+    #[Route(path: '/sizeprice/delete/{id}', methods: ['GET'], name: 'size.delete', middleware: [AdminMiddleware::class])]
+    public function deletesize(int $id): Response
+    {
+        try {
+            $taille = $this->em->find(Taille::class, $id);
+            
+            if ($taille) {
+                $this->em->remove($taille);
+                $this->em->flush();
+            }
+        } catch (\Exception $e) {
+            // On ignore l'erreur
+        }
+        
+        // Redirection vers la liste des tailles
+        return $this->redirect('/sizeprice');
     }
 }
